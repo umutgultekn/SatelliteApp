@@ -2,4 +2,6 @@
     <string name="app_name">SatelliteApp</string>
     <string name="active">Active</string>
     <string name="passive">Passive</string>
+    <string name="search">Search</string>
+    <string name="back">Back</string>
 </resources>

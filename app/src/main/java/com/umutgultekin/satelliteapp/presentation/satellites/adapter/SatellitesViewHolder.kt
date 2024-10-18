@@ -17,8 +17,8 @@ class SatellitesViewHolder(
     ) = with(binding) {
 
         val context = binding.root.context
-        val activeColor = context.getColor(R.color.gray)
-        val inactiveColor = context.getColor(R.color.light_gray)
+        val activeColor = context.getColor(R.color.dark_gray)
+        val inactiveColor = context.getColor(R.color.gray)
 
         textViewSatelliteName.apply {
             text = uiModel.name
@@ -38,5 +38,9 @@ class SatellitesViewHolder(
 
         val drawable = AppCompatResources.getDrawable(context, drawableId)
         imageViewPassive.setImageDrawable(drawable)
+
+        cardView.setOnClickListener {
+            onItemClicked?.invoke(uiModel)
+        }
     }
 }

@@ -8,20 +8,40 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutMain"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="@dimen/margin_medium">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edit_text_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_search_edit_text"
+            android:drawableStart="@drawable/ic_search_24"
+            android:drawablePadding="@dimen/margin_small"
+            android:hint="@string/search"
+            android:minHeight="48dp"
+            android:paddingHorizontal="@dimen/margin_medium"
+            android:paddingVertical="@dimen/margin_small"
+            android:textColor="@color/dark_gray"
+            android:textColorHint="@color/light_gray"
+            android:textCursorDrawable="@drawable/search_cursor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_satellites"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="16dp"
+            android:layout_marginTop="@dimen/margin_medium"
             android:clipToPadding="false"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_search"
             tools:itemCount="3"
             tools:listitem="@layout/item_satellites" />
 
