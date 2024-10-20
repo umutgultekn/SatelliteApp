@@ -15,10 +15,10 @@ data class SatellitePositionsItemApiModel(
     @SerializedName("id")
     val id: String? = null,
     @SerializedName("positions")
-    val positions: List<Position?>? = null
+    val positions: List<PositionApiModel?>? = null
 )
 
-data class Position(
+data class PositionApiModel(
     @SerializedName("posX")
     val posX: Double? = null,
     @SerializedName("posY")
