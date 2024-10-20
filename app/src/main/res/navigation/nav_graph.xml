@@ -19,6 +19,9 @@
         android:name="com.umutgultekin.satelliteapp.presentation.satellite_details.SatelliteDetailsFragment"
         android:label="Satellite Details"
         tools:layout="@layout/fragment_satellite_details">
+        <argument
+            android:name="uiModel"
+            app:argType="com.umutgultekin.satelliteapp.domain.model.SatelliteItemUiModel" />
     </fragment>
 
 </navigation>

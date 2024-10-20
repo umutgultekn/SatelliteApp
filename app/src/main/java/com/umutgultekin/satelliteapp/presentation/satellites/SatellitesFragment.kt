@@ -10,57 +10,38 @@ import com.umutgultekin.satelliteapp.common.DividerItemDecoration
 import com.umutgultekin.satelliteapp.common.NoAnimationItemAnimator
 import com.umutgultekin.satelliteapp.common.State
 import com.umutgultekin.satelliteapp.databinding.FragmentSatellitesBinding
-import com.umutgultekin.satelliteapp.domain.model.SatelliteUiModel
+import com.umutgultekin.satelliteapp.domain.model.SatelliteItemUiModel
 import com.umutgultekin.satelliteapp.extensions.textChanges
 import com.umutgultekin.satelliteapp.presentation.satellites.adapter.SatellitesAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @AndroidEntryPoint
 class SatellitesFragment :
     BaseFragment<FragmentSatellitesBinding>(FragmentSatellitesBinding::inflate) {
 
     private val viewModel: SatellitesViewModel by viewModels()
-
     private lateinit var satellitesAdapter: SatellitesAdapter
-    private val searchDelay = 300L
     private var searchJob: Job? = null
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
-        initSearchView()
-        viewModel.getSatellites()
+        setupUi()
         collectSatellites()
     }
 
-    private fun collectSatellites() {
-        lifecycleScope.launch {
-            viewModel.satellitesStateFlow.collect { state ->
-                when (state) {
-                    is State.Loading -> Unit
-                    is State.Success -> state.data?.satellites?.let { submitList(satellites = it) }
-                    is State.Error -> Unit
-                }
-            }
-        }
+    private fun setupUi() {
+        setupRecyclerView()
+        setupSearchView()
     }
 
-
-    private fun submitList(satellites: List<SatelliteUiModel>) {
-        satellitesAdapter.setData(satellites)
-    }
-
-    private fun initRecyclerView() {
+    private fun setupRecyclerView() {
         satellitesAdapter = SatellitesAdapter { satelliteUiModel ->
-            findNavController().navigate(
-                SatellitesFragmentDirections.toSatelliteDetailsFragment()
-            )
+            navigateToDetails(satelliteUiModel = satelliteUiModel)
         }
 
         binding.recyclerviewSatellites.apply {
@@ -71,21 +52,59 @@ class SatellitesFragment :
     }
 
     @OptIn(FlowPreview::class)
-    private fun initSearchView() {
+    private fun setupSearchView() {
         searchJob?.cancel()
 
-        searchJob = lifecycleScope.launch {
+        searchJob = viewLifecycleOwner.lifecycleScope.launch {
             binding.editTextSearch.textChanges()
-                .debounce(searchDelay)
-                .distinctUntilChanged()
+                .debounce(SEARCH_DELAY)
                 .collect { query ->
-                    satellitesAdapter.filter.filter(query.lowercase())
+                    filterSatellites(query = query)
                 }
         }
+    }
+
+    private fun collectSatellites() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.satellitesStateFlow.collect { state ->
+                when (state) {
+                    is State.Idle -> Unit
+                    is State.Loading -> showLoading()
+                    is State.Success -> {
+                        hideLoading()
+                        updateSatellitesList(satellites = state.data?.satellites)
+                    }
+
+                    is State.Error -> {
+                        hideLoading()
+                        showErrorToast()
+                    }
+
+                }
+            }
+        }
+    }
+
+    private fun updateSatellitesList(satellites: List<SatelliteItemUiModel>?) {
+        satellites?.let { satellitesAdapter.setData(satellites) }
+    }
+
+    private fun navigateToDetails(satelliteUiModel: SatelliteItemUiModel) {
+        findNavController().navigate(
+            SatellitesFragmentDirections.toSatelliteDetailsFragment(satelliteUiModel)
+        )
+    }
+
+    private fun filterSatellites(query: String) {
+        satellitesAdapter.filter.filter(query.lowercase(Locale.getDefault()))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         searchJob?.cancel()
+    }
+
+    companion object {
+        private const val SEARCH_DELAY = 300L
     }
 }

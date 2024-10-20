@@ -1,7 +1,11 @@
 package com.umutgultekin.satelliteapp.di
 
 import android.content.Context
+import com.umutgultekin.satelliteapp.data.remote.repository.SatelliteDetailsRepositoryImpl
+import com.umutgultekin.satelliteapp.data.remote.repository.SatellitePositionsRepositoryImpl
 import com.umutgultekin.satelliteapp.data.remote.repository.SatellitesRepositoryImpl
+import com.umutgultekin.satelliteapp.domain.repository.SatelliteDetailsRepository
+import com.umutgultekin.satelliteapp.domain.repository.SatellitePositionsRepository
 import com.umutgultekin.satelliteapp.domain.repository.SatellitesRepository
 import dagger.Module
 import dagger.Provides
@@ -20,4 +24,15 @@ object AppModule {
         return SatellitesRepositoryImpl(context = context)
     }
 
+    @Provides
+    @Singleton
+    fun provideSatelliteDetailsRepository(@ApplicationContext context: Context): SatelliteDetailsRepository {
+        return SatelliteDetailsRepositoryImpl(context = context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSatellitePositionsRepository(@ApplicationContext context: Context): SatellitePositionsRepository {
+        return SatellitePositionsRepositoryImpl(context = context)
+    }
 }

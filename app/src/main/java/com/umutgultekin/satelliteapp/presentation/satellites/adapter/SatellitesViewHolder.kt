@@ -4,7 +4,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.umutgultekin.satelliteapp.R
 import com.umutgultekin.satelliteapp.databinding.ItemSatellitesBinding
-import com.umutgultekin.satelliteapp.domain.model.SatelliteUiModel
+import com.umutgultekin.satelliteapp.domain.model.SatelliteItemUiModel
 
 
 class SatellitesViewHolder(
@@ -12,8 +12,8 @@ class SatellitesViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
-        uiModel: SatelliteUiModel,
-        onItemClicked: ((SatelliteUiModel) -> Unit)?
+        uiModel: SatelliteItemUiModel,
+        onItemClicked: ((SatelliteItemUiModel) -> Unit)?
     ) = with(binding) {
 
         val context = binding.root.context
@@ -40,7 +40,7 @@ class SatellitesViewHolder(
         imageViewPassive.setImageDrawable(drawable)
 
         cardView.setOnClickListener {
-            onItemClicked?.invoke(uiModel)
+            if (uiModel.active) onItemClicked?.invoke(uiModel)
         }
     }
 }

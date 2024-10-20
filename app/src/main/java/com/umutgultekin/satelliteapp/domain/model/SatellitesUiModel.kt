@@ -5,12 +5,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SatellitesUiModel(
-    val satellites: List<SatelliteUiModel>
+    val satellites: List<SatelliteItemUiModel>
 ) : Parcelable
 
 @Parcelize
-data class SatelliteUiModel(
-    val id: Int,
+data class SatelliteItemUiModel(
+    val id: Long,
     val active: Boolean,
     val name: String
 ) : Parcelable

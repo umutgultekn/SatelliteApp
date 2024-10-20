@@ -7,4 +7,5 @@ plugins {
     alias(libs.plugins.kotlin.android.ksp) apply false
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.navigation.safeargs) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
 }

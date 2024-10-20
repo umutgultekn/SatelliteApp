@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.android.ksp)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -55,6 +56,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
     implementation(libs.hilt)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.kotlinx.serialization.json)
     ksp(libs.hilt.compiler)
     implementation(libs.timber)
     implementation(libs.retrofit)
