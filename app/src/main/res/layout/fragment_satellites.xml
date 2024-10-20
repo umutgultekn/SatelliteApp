@@ -21,6 +21,8 @@
             android:drawablePadding="@dimen/margin_small"
             android:hint="@string/search"
             android:minHeight="48dp"
+            android:maxLines="1"
+            android:maxLength="30"
             android:paddingHorizontal="@dimen/margin_medium"
             android:paddingVertical="@dimen/margin_small"
             android:textColor="@color/dark_gray"

@@ -2,8 +2,10 @@ package com.umutgultekin.satelliteapp.presentation.satellites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.umutgultekin.satelliteapp.common.Constants.EMPTY_STRING
 import com.umutgultekin.satelliteapp.common.Constants.REQUEST_TIMEOUT
 import com.umutgultekin.satelliteapp.common.State
+import com.umutgultekin.satelliteapp.domain.model.SatelliteItemUiModel
 import com.umutgultekin.satelliteapp.domain.model.SatellitesUiModel
 import com.umutgultekin.satelliteapp.domain.use_case.SatellitesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,8 +30,27 @@ class SatellitesViewModel @Inject constructor(
     val satellitesStateFlow: StateFlow<State<SatellitesUiModel>> =
         _satellitesStateFlow.asStateFlow()
 
+    private var originalList: List<SatelliteItemUiModel> = emptyList()
+
+    val searchQuery = MutableStateFlow(EMPTY_STRING)
+
     init {
         getSatellites()
+    }
+
+    fun updateSearchQuery(query: String) {
+        searchQuery.value = query
+        filterSatellites(query)
+    }
+
+    private fun filterSatellites(query: String) {
+        val filteredList = if (query.isEmpty()) {
+            originalList
+        } else {
+            originalList.filter { it.name.contains(query, ignoreCase = true) }
+        }
+
+        _satellitesStateFlow.value = State.Success(SatellitesUiModel(satellites = filteredList))
     }
 
     private fun getSatellites() {
@@ -40,8 +61,9 @@ class SatellitesViewModel @Inject constructor(
 
                     satellitesUseCase.getSatellites()
                         .flowOn(Dispatchers.IO)
-                        .firstOrNull()?.let { satellites ->
-                            _satellitesStateFlow.emit(State.Success(satellites))
+                        .firstOrNull()?.let { satellitesUiModel ->
+                            originalList = satellitesUiModel.satellites
+                            _satellitesStateFlow.emit(State.Success(satellitesUiModel))
                         } ?: run {
                         _satellitesStateFlow.emit(State.Error())
                     }

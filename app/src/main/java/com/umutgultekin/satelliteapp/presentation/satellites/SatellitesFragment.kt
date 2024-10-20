@@ -18,7 +18,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 @AndroidEntryPoint
 class SatellitesFragment :
@@ -53,13 +52,14 @@ class SatellitesFragment :
 
     @OptIn(FlowPreview::class)
     private fun setupSearchView() {
+        binding.editTextSearch.setText(viewModel.searchQuery.value)
         searchJob?.cancel()
 
         searchJob = viewLifecycleOwner.lifecycleScope.launch {
             binding.editTextSearch.textChanges()
                 .debounce(SEARCH_DELAY)
                 .collect { query ->
-                    filterSatellites(query = query)
+                    viewModel.updateSearchQuery(query)
                 }
         }
     }
@@ -86,17 +86,13 @@ class SatellitesFragment :
     }
 
     private fun updateSatellitesList(satellites: List<SatelliteItemUiModel>?) {
-        satellites?.let { satellitesAdapter.setData(satellites) }
+        satellites?.let { satellitesAdapter.submitList(satellites) }
     }
 
     private fun navigateToDetails(satelliteUiModel: SatelliteItemUiModel) {
         findNavController().navigate(
             SatellitesFragmentDirections.toSatelliteDetailsFragment(satelliteUiModel)
         )
-    }
-
-    private fun filterSatellites(query: String) {
-        satellitesAdapter.filter.filter(query.lowercase(Locale.getDefault()))
     }
 
     override fun onDestroyView() {
